@@ -1,19 +1,13 @@
 #include <SDL.h>
+#include "SDL_image.h"
 #include "Game.h"
-#include "Debug.h"
-#include <iostream>
+#include "Level1.h"
 
 using namespace std;
 
-SDL_Event event;
-
-SDL_Surface* img = NULL;
-SDL_Rect rect;
-
 Game::Game()
 {
-	rect.x=0;
-	rect.y=0;
+
 }
 
 bool Game::Initialize(const char* msg, int x, int y , int w, int l, int f)
@@ -22,69 +16,65 @@ bool Game::Initialize(const char* msg, int x, int y , int w, int l, int f)
 
 	if(window = SDL_CreateWindow(msg,x,y,w,l,f))
 	{
+
 		screenSurface = SDL_GetWindowSurface(window);
+		renderer = SDL_CreateRenderer(window,-1,0);
+
+		//s = new Level1(renderer);
+		TheGottaCatchEmAll::Instance()->Load();
+		
 		return true;
 	}
 	else
 	{
 		return false;
 	}
-	
+
 }
 
-void Game::Render()
-{
-		renderer = SDL_CreateRenderer(window,-1,0);
-		SDL_SetRenderDrawColor(renderer,0,0,0,255);
-		SDL_RenderClear(renderer);
-		SDL_RenderPresent(renderer);
-}
 
 void Game::Update()
 {
 	while(running)
 	{
-		//DEBUG_MSG("Running");
+		
+		SDL_RenderClear(renderer);
 
-		while(SDL_PollEvent(&event))  
+		//Insert your hopes and dreams here
+		while(SDL_PollEvent(&e))
 		{
-			//Main Game here
 
-
-			//Hit Escape, exit
-			switch(event.type)
-				case SDL_KEYDOWN:
-					switch(event.key.keysym.sym)
-					{
-						case SDLK_ESCAPE:
-							running = false;
-							break;
-						case SDLK_0:
-							img = LoadImage(img,"images/EotA.bmp");
-							break;
-						case SDLK_1:
-							
-							break;
-						case SDLK_2:
-							UnloadImage(img);
-							break;
-						case SDLK_3:
-							rect.x++;
-							break;
-					}
-
-			//img->
-			//Update All
-			SDL_RenderClear(renderer);
-
-			Draw(img,screenSurface);
-			SDL_UpdateWindowSurface(window);
-
-			SDL_RenderPresent(renderer);
-			
 		}
+
+		//Have we switched state?
+		Events();
+
+		//Update dem scenes yo
+		TheGottaCatchEmAll::Instance()->NextScene(renderer)->Update();
+		
+
+		SDL_RenderPresent(renderer);
+
 	}
 }
+
+void Game::Render()
+{
+	
+		//Set to black
+		SDL_SetRenderDrawColor(renderer,0,0,0,255);
+
+		//Clear Window to black, Think of as spritebatch.draw
+		SDL_RenderClear(renderer);
+
+		//Draw
+		//s->Draw();
+		TheGottaCatchEmAll::Instance()->NextScene(renderer)->Draw();
+
+		//Show Window, spritebatch.end
+		SDL_RenderPresent(renderer);
+}
+
 
 bool Game::IsRunning()
 {
@@ -99,33 +89,20 @@ bool Game::IsRunning()
 	}
 }
 
-SDL_Surface* Game::LoadImage(SDL_Surface* image, const char* imagePath)
-{
-	image = SDL_LoadBMP(imagePath);
 
-	if(image==NULL)
+void Game::Events()
+{
+	if(TheTouchMeBaby::Instance()->HasBeenTouched(SDL_SCANCODE_1))
 	{
-		DEBUG_MSG("Did not load image");
-		return false;
+		//DEBUG_MSG("YAY");
+		TheGottaCatchEmAll::Instance()->setCurrent(1);
 	}
-	else
+	if(TheTouchMeBaby::Instance()->HasBeenTouched(SDL_SCANCODE_ESCAPE))
 	{
-		DEBUG_MSG("Image loaded");
-		return image;
+		SDL_Quit();
+		running = false;
 	}
-}
-
-void Game::UnloadImage(SDL_Surface* image)
-{
-	SDL_FreeSurface(image);
-	image = NULL;
-	DEBUG_MSG("Image Unloaded");
-}
-
-void Game::Draw(SDL_Surface* image, SDL_Surface* screen)
-{
-	SDL_BlitSurface( image, NULL, screen, &rect );
-	DEBUG_MSG("Image Drawn");
+	
 }
 
 

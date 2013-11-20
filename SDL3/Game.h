@@ -3,6 +3,9 @@
 
 #include <SDL.h>
 #include <iostream>
+#include "GottaCatchEmAll.h"
+#include "TouchMeBaby.h"
+#include "SDL_mixer.h"
 
 using namespace std;
 
@@ -13,16 +16,16 @@ private:
 	SDL_Renderer * renderer;
 	SDL_Surface* screenSurface;
 	bool running;
+	int playerUpdateValue;
+	SDL_Event e;
 public:
 	Game();
 	~Game();
 	bool Initialize(const char*, int, int, int, int, int);
 	void Render();
 	void Update();
-	SDL_Surface* LoadImage(SDL_Surface*, const char*);
-	void UnloadImage(SDL_Surface*);
 	bool IsRunning();
-	void CleanUp();
-	void Draw(SDL_Surface*,SDL_Surface *);
+	void CleanUp();	
+	void Events();
 };
 #endif
