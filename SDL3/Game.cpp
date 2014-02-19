@@ -93,7 +93,7 @@ bool Game::IsRunning()
 	}
 }
 
-
+//For testing...
 void Game::Events()
 {
 	if(TheInputManager::Instance()->HasBeenTouched(SDL_SCANCODE_P))
