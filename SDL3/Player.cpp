@@ -1,3 +1,8 @@
+/*
+//The Player class is an example of a generic object. Player inherits from Generic, and is a "Generic object" in our game. This can
+//be a player, an enemy, an obstacle, basically any object that exists in our game.
+*/
+
 #include "Player.h"
 
 
@@ -7,12 +12,12 @@ Player::Player(SDL_Renderer* renderer)
 	pRenderer = renderer;
 	cFrame = 1;
 	cRow = 1;
-
+	jumping = false;
 }
 
 Player::~Player()
 {
-
+	delete position, pRenderer;
 }
 
 void Player::Load(char* path, char* textID, float x, float y, int w, int h)
@@ -25,23 +30,14 @@ void Player::Load(char* path, char* textID, float x, float y, int w, int h)
 	playerRect.h=h;
 	playerRect.w=w;
 
-	DrawnToLife::Instance()->LoadImage(path,textID,pRenderer);
+	TextureManager::Instance()->LoadImage(path,textID,pRenderer);
 	PtextID = textID;
-
+	timer=0;
 }
 
 void Player::Draw()
 {
-	//SDL_RenderClear(pRenderer);
-
-	//Spritebatch.Begin
-	DrawnToLife::Instance()->AnimationDraw(PtextID,pRenderer,position->getx(),position->gety(),pw,ph,cRow,cFrame);
-	
-	//SDL_RenderPresent(pRenderer);
-
-	//Spritebatch.End
-	//DEBUG_MSG(px);
-
+	TextureManager::Instance()->AnimationDraw(PtextID,pRenderer,position->getx(),position->gety(),pw,ph,cRow,cFrame);
 }
 
 void Player::Update()
@@ -49,11 +45,20 @@ void Player::Update()
 	//Update Animation
 	cFrame = int(((SDL_GetTicks() / 100) % 6));
 
-	//DEBUG_MSG(k.keysym.sym);
 	Move();
+	
+	//Fall
+	if(!jumping)
+	{
+		position->setY(position->gety()+0.5f);
+
+		if(position->gety()>700.0-30.f)
+			position->setY(700.0-30.f);
+	}
 
 	playerRect.x=(int)position->getx();
 	playerRect.y=(int)position->gety();
+
 
 	//Redraw
 	Draw();
@@ -61,25 +66,65 @@ void Player::Update()
 
 void Player::Move()
 {
-	if(TheTouchMeBaby::Instance()->HasBeenTouched(SDL_SCANCODE_A))
+	if(TheInputManager::Instance()->HasBeenTouched(SDL_SCANCODE_A))
 	{
-		//DEBUG_MSG("YAY");
-		position->setX(position->getx()-0.1f);
+		//Move left
+		position->setX(position->getx()-0.2f);
 		
 		if(position->getx()<0.0f)
 			position->setX(0.1f);
+		cRow = 2;
 	}
-	if(TheTouchMeBaby::Instance()->HasBeenTouched(SDL_SCANCODE_D))
+	if(TheInputManager::Instance()->HasBeenTouched(SDL_SCANCODE_D))
 	{
-		position->setX(position->getx()+0.1f);
+		//Move Right
+		position->setX(position->getx()+0.2f);
 		
-		if(position->getx()>900.0-30.f)
-			position->setX(900.0-30.f);
+		if(position->getx()>1300.0-30.f)
+			position->setX(1300.0-30.f);
+		cRow=1;
 	}
+	if(TheInputManager::Instance()->HasBeenTouched(SDL_SCANCODE_SPACE))
+	{
+		jumping = true;
+	}
+
+	Jump();
 
 }
 
 SDL_Rect Player::getRect()
 {
 	return playerRect;
+}
+
+void Player::Jump()
+{
+	if(jumping)
+	{
+		if(timer<300)
+		{
+			position->setY(position->gety()-0.4f);
+			
+		} 
+		if(timer>=300)
+		{
+			position->setY(position->gety()+0.4f);
+
+		}
+		
+		if(timer>=600)
+		{
+			timer = 0;
+			jumping = false;
+		}
+
+		timer++;
+	}
+		
+}
+
+void Player::LoadDupe(char* textID, float x, float y, int w, int h)
+{
+	//NotUsing
 }

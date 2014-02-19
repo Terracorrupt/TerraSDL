@@ -3,9 +3,8 @@
 
 #include <SDL.h>
 #include <iostream>
-#include "GottaCatchEmAll.h"
-#include "TouchMeBaby.h"
-#include "SDL_mixer.h"
+#include "SceneManager.h"
+#include "InputManager.h"
 
 using namespace std;
 

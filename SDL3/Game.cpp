@@ -1,3 +1,7 @@
+/*
+//The Game Class runs the main Scene Manager, Initializes the SDL Window and Renderer, and other main behaviours
+*/
+
 #include <SDL.h>
 #include "SDL_image.h"
 #include "Game.h"
@@ -20,8 +24,8 @@ bool Game::Initialize(const char* msg, int x, int y , int w, int l, int f)
 		screenSurface = SDL_GetWindowSurface(window);
 		renderer = SDL_CreateRenderer(window,-1,0);
 
-		//s = new Level1(renderer);
-		TheGottaCatchEmAll::Instance()->Load();
+		//Load our scene manager
+		SceneManager::Instance()->Load();
 		
 		return true;
 	}
@@ -46,11 +50,12 @@ void Game::Update()
 
 		}
 
+
 		//Have we switched state?
 		Events();
 
 		//Update dem scenes yo
-		TheGottaCatchEmAll::Instance()->NextScene(renderer)->Update();
+		SceneManager::Instance()->NextScene(renderer)->Update();
 		
 
 		SDL_RenderPresent(renderer);
@@ -68,9 +73,8 @@ void Game::Render()
 		SDL_RenderClear(renderer);
 
 		//Draw
-		//s->Draw();
-		TheGottaCatchEmAll::Instance()->NextScene(renderer)->Draw();
-
+		SceneManager::Instance()->NextScene(renderer)->Draw();
+		
 		//Show Window, spritebatch.end
 		SDL_RenderPresent(renderer);
 }
@@ -92,12 +96,17 @@ bool Game::IsRunning()
 
 void Game::Events()
 {
-	if(TheTouchMeBaby::Instance()->HasBeenTouched(SDL_SCANCODE_1))
+	if(TheInputManager::Instance()->HasBeenTouched(SDL_SCANCODE_P))
 	{
-		//DEBUG_MSG("YAY");
-		TheGottaCatchEmAll::Instance()->setCurrent(1);
+		
+		SceneManager::Instance()->setCurrent(2);
 	}
-	if(TheTouchMeBaby::Instance()->HasBeenTouched(SDL_SCANCODE_ESCAPE))
+	if(TheInputManager::Instance()->HasBeenTouched(SDL_SCANCODE_3))
+	{
+		
+		SceneManager::Instance()->setCurrent(4);
+	}
+	if(TheInputManager::Instance()->HasBeenTouched(SDL_SCANCODE_ESCAPE))
 	{
 		SDL_Quit();
 		running = false;

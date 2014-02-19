@@ -10,5 +10,7 @@ public:
 	~Menu();
 	void Update();
 	void Draw();
+private:
+	Generic* m;
 };
 #endif

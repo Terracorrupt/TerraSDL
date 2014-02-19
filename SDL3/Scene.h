@@ -4,17 +4,20 @@
 #include <SDL.h>
 #include "SDL_image.h"
 #include "Debug.h"
-#include "DrawnToLife.h"
-#include "TouchMeBaby.h"
+#include "TextureManager.h"
+#include "InputManager.h"
 #include "Player.h"
 #include "Enemy.h"
-#include <iostream>
+#include "SDL_mixer.h"
 #include <math.h>
+#include <iostream>
+#include "Obstacle.h"
 
 class Scene
 {
 public:
 	virtual void Update()=0;
 	virtual void Draw()=0;
+	Mix_Music* music;
 };
 #endif

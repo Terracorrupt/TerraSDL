@@ -1,3 +1,7 @@
+/*
+//Vector2 is our own defined type, used later for position manipulation
+*/
+
 #include "Vector2.h"
 #include "Debug.h"
 

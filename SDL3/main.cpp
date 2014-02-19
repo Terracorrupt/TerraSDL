@@ -1,3 +1,7 @@
+/*
+//The Main Class runs the main game loop, and controls game speed
+*/
+
 #include <SDL.h>
 #include <iostream>
 #include "Game.h"
@@ -11,7 +15,7 @@ int main(int argc, char *argv[])
 	Game *g = new Game();
 
 
-	if((g->Initialize("Hello", 20,20,900,600,0))==true)
+	if((g->Initialize("TerraSDL", 20,20,1300,700,0))==true)
 	{
 		g->Render();
 	}
